@@ -85,12 +85,11 @@ public class main {
 
 //            try {
                 System.out.print("Elige opción:\n"
-                        + "1.- Generacional (2 Puntos)\n"
-                        + "2.- Generacional (BLX)\n"
-                        + "3.- Estacionario (2 Puntos)\n"
-                        + "4.- Estacionario (BLX)\n"
-                        + "5.- Cambiar conjunto de archivos\n"
-                        + "6.- Cambiar semilla\n "
+                        + "1.- AM (10,1.0)\n"
+                        + "2.- AM (10,0.1)\n"
+                        + "3.- AM (10,0.1mej)\n"
+                        + "4.- Cambiar conjunto de archivos\n"
+                        + "5.- Cambiar semilla\n "
                         + "0.- Salir"
                         + "\n: ");
 
@@ -140,32 +139,18 @@ public class main {
 //                        lineaInicial++;
                         break;
                     case 4:
-//                        System.out.println("Ejecucion E_BLX "+contador+" de "+DIRECTORIO+" en "+archivos[cuentaArchivos]);
-//                        startTime = System.nanoTime();
-//                        Estacionario.cruce = true;
-//                        estacionario = new Estacionario(transmisores, frecuencias, rest);
-//                        endTime = System.nanoTime();
-//                        resultado = estacionario.resultadoFinal();
-//
-////                        estacionario.resMejorIndividuo();
-//                        duration = (endTime - startTime) / 1000000000;
-//                        System.out.println("Tiempo de ejecucion: " + duration + " segundos");
-//                        escribirExcel(duration, resultado, lineaInicial, columnaInicial, archivos[cuentaArchivos]);
-//                        lineaInicial++;
-                        break;
-                    case 5:
                         System.out.println("Conjunto de archivos que quiere usar: ");
 
-//                        DIRECTORIO = reader.next();
+                        DIRECTORIO = reader.next();
                         LINEAS = countLines(DIRECTORIO) + 1;
 
                         frecuencias = new rangoFrec();
                         transmisores = new listaTransmisores();
                         rest = new Restricciones();
                         break;
-                    case 6:
+                    case 5:
                         System.out.print("Nueva semilla: ");
-//                        semilla = reader.nextInt();
+                        semilla = reader.nextInt();
                         NUMERO.setSeed(semilla);
                         break;
                     case 0:
