@@ -50,6 +50,7 @@ public class Hibrido {
             genetico.algoritmo();
             for ( int i = 0; i < numIndividuos; i++ ){
                 BusquedaLocal bl = new BusquedaLocal (i);
+                bl.algoritmo();
             }
             
         }

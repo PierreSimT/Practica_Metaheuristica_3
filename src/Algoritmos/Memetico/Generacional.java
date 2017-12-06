@@ -23,14 +23,6 @@ public class Generacional {
     final int numParejas = 7;
     final int numIndividuos = Hibrido.numIndividuos;
     
-    List<List<Integer>> frecuencias = Hibrido.frecuencias;
-    List<Integer> transmisores = Hibrido.transmisores;
-    Restricciones restricciones = Hibrido.restricciones;
-
-    List<Integer> resultado = Hibrido.resultado;
-    List<List<Integer>> padres = Hibrido.padres;
-    List<List<Integer>> hijos = Hibrido.hijos;
-    
     int numEstancamiento = 0;
     int idMejorResult;
     int mejorResult = Integer.MAX_VALUE;
@@ -40,6 +32,8 @@ public class Generacional {
         
        for ( int i = 0; i < numIndividuos; i ++ ) {
             construccionInicial(i);
+            BusquedaLocal bl = new BusquedaLocal(i);
+            bl.algoritmo();
         }
        
     }

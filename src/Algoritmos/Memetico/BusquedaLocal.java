@@ -5,8 +5,7 @@
  */
 package Algoritmos.Memetico;
 
-import static Algoritmos.Memetico.Hibrido.numEvaluaciones;
-import Utils.*;
+import static Algoritmos.Memetico.Hibrido.*;
 import static Utils.Utilidades.*;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -21,17 +20,13 @@ import static main.main.NUMERO;
 public class BusquedaLocal {
 
     public static int numIteraciones = 200;
-    
-    List<List<Integer>> frecuencias = Hibrido.frecuencias;
-    List<Integer> transmisores = Hibrido.transmisores;
+    int id;
     List<Integer> frecuenciasR; // Cada posicion es la frecuencia asignada a dicho transmisor
-    Restricciones restricciones = Hibrido.restricciones;
-    int resultado;
 
-    public BusquedaLocal ( int id ) {
+    public BusquedaLocal ( int _id ) {
         
-        frecuenciasR = Hibrido.padres.get(id);
-        resultado = Hibrido.resultado.get(id);
+        frecuenciasR = padres.get(id);
+        id = _id;
         
     }
     
@@ -79,11 +74,11 @@ public class BusquedaLocal {
                     nuevaSolucion.addAll(frecuenciasR);
                     nuevaSolucion.set(token, valorInicial);
                     int fact2 = rDiferencia(nuevaSolucion, token, restricciones);
-                    nuevoCoste = resultado + (fact2 - fact1);
+                    nuevoCoste = resultado.get(id) + (fact2 - fact1);
 
-                    if ( nuevoCoste < resultado ) {
+                    if ( nuevoCoste < resultado.get(id) ) {
                         frecuenciasR.set(token, valorInicial);
-                        resultado = nuevoCoste;
+                        resultado.set(id, nuevoCoste);
                         encontrado = true;
                     }
                     indiceInicial --;
@@ -97,11 +92,11 @@ public class BusquedaLocal {
                     nuevaSolucion.addAll(frecuenciasR);
                     nuevaSolucion.set(token, valorInicial);
                     int fact2 = rDiferencia(nuevaSolucion, token, restricciones);
-                    nuevoCoste = resultado + (fact2 - fact1);
+                    nuevoCoste = resultado.get(id) + (fact2 - fact1);
 
-                    if ( nuevoCoste < resultado ) {
+                    if ( nuevoCoste < resultado.get(id) ) {
                         frecuenciasR.set(token, valorInicial);
-                        resultado = nuevoCoste;
+                        resultado.set(id, nuevoCoste);
                         encontrado = true;
                     }
                     indiceInicial ++;
