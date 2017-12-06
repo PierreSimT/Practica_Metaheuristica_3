@@ -3,18 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Algoritmos.Geneticos;
+package Algoritmos.Memetico;
 
+import static Algoritmos.Memetico.Hibrido.*;
 import static Utils.Utilidades.*;
 import Utils.*;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import static main.main.NUMERO;
-
 /**
  *
  * @author ptondreau
@@ -22,46 +21,52 @@ import static main.main.NUMERO;
 public class Generacional {
 
     final int numParejas = 7;
-    final int numIndividuos = 20;
+    final int numIndividuos = Hibrido.numIndividuos;
     
-    List<List<Integer>> frecuencias = new ArrayList<>();
-    List<Integer> transmisores = new ArrayList<>();
-    Restricciones restricciones;
+    List<List<Integer>> frecuencias = Hibrido.frecuencias;
+    List<Integer> transmisores = Hibrido.transmisores;
+    Restricciones restricciones = Hibrido.restricciones;
 
-    int[] resultado = new int[ numIndividuos ];
-    List<List<Integer>> padres = new ArrayList<>();
-    List<List<Integer>> hijos = new ArrayList<>();
+    List<Integer> resultado = Hibrido.resultado;
+    List<List<Integer>> padres = Hibrido.padres;
+    List<List<Integer>> hijos = Hibrido.hijos;
     
+    int numEstancamiento = 0;
     int idMejorResult;
     int mejorResult = Integer.MAX_VALUE;
     int idMutado;
 
-    int numGeneraciones = 0;
-    int numEvaluaciones = 0;
-
-    public Generacional ( listaTransmisores _transmisores, rangoFrec _frecuencias, Restricciones _rest ) throws FileNotFoundException {
-        frecuencias = _frecuencias.rangoFrecuencias;
-        transmisores = _transmisores.transmisores;
-        restricciones = _rest;
-
-        for ( int i = 0; i < numIndividuos; i ++ ) {
-            padres.add(new ArrayList<>());
-        }
-
-        for ( int i = 0; i < numIndividuos; i ++ ) {
+    public Generacional () throws FileNotFoundException {
+        
+       for ( int i = 0; i < numIndividuos; i ++ ) {
             construccionInicial(i);
         }
+       
+    }
+    
+//    public Generacional ( listaTransmisores _transmisores, rangoFrec _frecuencias, Restricciones _rest ) {
+//        frecuencias = _frecuencias.rangoFrecuencias;
+//        transmisores = _transmisores.transmisores;
+//        restricciones = _rest;
+//
+//        for ( int i = 0; i < numIndividuos; i ++ ) {
+//            padres.add(new ArrayList<>());
+//        }
+//
+//    }
 
+    void algoritmo () throws FileNotFoundException {
+        
+        numGeneraciones = 0;
         //Loop hasta 20000 evaluaciones
-        while( numEvaluaciones < 20000 ) {
+        while( numGeneraciones < 10 ) {
             generarHijos();
             cruzarIndividuos();
             mutarIndividuos();
             nuevaGeneracion();
         }
-
     }
-
+    
     void construccionInicial ( int id ) throws FileNotFoundException {
         
         List <Integer> frecuenciasR = new ArrayList<>();
@@ -73,7 +78,7 @@ public class Generacional {
             frecuenciasR.add(frecAleatoria);
         }
         
-        resultado[id] = rDiferencia(frecuenciasR, restricciones);
+        resultado.set(id, rDiferencia(frecuenciasR, restricciones));
         padres.get(id).addAll(frecuenciasR);
         frecuenciasR.clear();
         
@@ -87,7 +92,7 @@ public class Generacional {
             Random numero2 = NUMERO;
             int seleccionado2 = numero.nextInt(numIndividuos);
 
-            if ( resultado[ seleccionado ] < resultado[ seleccionado2 ] ) {
+            if ( resultado.get(seleccionado) < resultado.get(seleccionado2) ) {
                 hijos.add(i, padres.get(seleccionado));
 
             } else {
@@ -185,39 +190,6 @@ public class Generacional {
             hijos.set(individuo2, solucion2);
     }
     
-    void algCruce2Puntos ( int individuo1, int individuo2 ) {
-        Random numero = NUMERO;
-        int seleccionado = numero.nextInt(transmisores.size());
-
-        Random numero2 = NUMERO;
-        int seleccionado2 = numero.nextInt(transmisores.size());
-
-        if ( seleccionado2 < seleccionado ) {
-            int temp = seleccionado;
-            seleccionado = seleccionado2;
-            seleccionado2 = temp;
-
-        }
-
-        List<Integer> solucion1 = new ArrayList<>();
-        List<Integer> solucion2 = new ArrayList<>();
-
-        //Primer cruce
-        solucion1.addAll(0, hijos.get(individuo1).subList(0, seleccionado));
-        solucion1.addAll(seleccionado, hijos.get(individuo2).subList(seleccionado, seleccionado2));
-        solucion1.addAll(seleccionado2, hijos.get(individuo1).subList(seleccionado2, transmisores.size()));
-
-        hijos.set(individuo1, solucion1);
-
-        //Segundo cruce
-        solucion2.addAll(0, hijos.get(individuo2).subList(0, seleccionado));
-        solucion2.addAll(seleccionado, hijos.get(individuo1).subList(seleccionado, seleccionado2));
-        solucion2.addAll(seleccionado2, hijos.get(individuo2).subList(seleccionado2, transmisores.size()));
-
-        hijos.set(individuo2, solucion2);
-
-    }
-
     public void nuevaGeneracion () throws FileNotFoundException {
         //Elitismo
 
@@ -227,8 +199,8 @@ public class Generacional {
         int minimo = Integer.MAX_VALUE;
         int actual = 0;
         for ( int i = 0; i < numIndividuos; i ++ ) {
-            if ( resultado[ i ] < minimo ) {
-                minimo = resultado[ i ];
+            if ( resultado.get(i) < minimo ) {
+                minimo = resultado.get(i);
                 actual = i;
             }
         }
@@ -236,6 +208,7 @@ public class Generacional {
         List<Integer> mejorIndividuo = padres.get(actual);
         
         /* Modificar todo esto, hay menos individuos a evaluar a cada iteracion */
+        // Evaluamos los hijos
         // Evaluamos los hijos
         if ( idMutado <= 14 ) {
             resultadoHijos = evaluar(hijos, 14);
@@ -247,7 +220,7 @@ public class Generacional {
 
         for ( int i = 14; i < numIndividuos; i ++ ) {
             if ( i != idMutado ) {
-                resultadoHijos[ i ] = resultado[ i ];
+                resultadoHijos[ i ] = resultado.get(i);
             }
         }
 
@@ -274,24 +247,26 @@ public class Generacional {
         padres.addAll(hijos);
         hijos.clear();
 
-        for ( int i = 0; i < resultado.length; i ++ ) {
-            resultado[ i ] = resultadoHijos[ i ]; //rDiferencia(padres.get(i), restricciones);
-            if ( resultado[ i ] < mejorResult ) {
-                mejorResult = resultado[ i ];
+        for ( int i = 0; i < resultado.size(); i ++ ) {
+            resultado.set(i, resultadoHijos[ i ]); //rDiferencia(padres.get(i), restricciones);
+            if ( resultado.get(i) < mejorResult ) {
+                mejorResult = resultado.get(i);
                 idMejorResult = i;
             }
         }
 
         if ( aux == mejorResult ) {
-            numGeneraciones ++;
+            numEstancamiento ++;
         } else {
-            numGeneraciones = 0;
+            numEstancamiento = 0;
         }
 
-        if ( numGeneraciones >= 20 || comprobarConvergencia() ) {
+        if ( numEstancamiento >= 20 || comprobarConvergencia() ) {
             reinicializacion();
-            numGeneraciones = 0;
+            numEstancamiento = 0;
         }
+        
+        numGeneraciones++;
     }
 
     public int[] evaluar ( List<List<Integer>> individuos, int mutado ) throws FileNotFoundException {
@@ -300,7 +275,7 @@ public class Generacional {
         for ( int i = 0; i < 14; i ++ ) {
             resultados[ i ] = rDiferencia(individuos.get(i), restricciones);
         }
-        if ( mutado >= 14 ) {
+        if ( idMutado >= 14 ) {
             resultados[ mutado ] = rDiferencia(individuos.get(mutado), restricciones);
         }
 
@@ -318,7 +293,7 @@ public class Generacional {
         }
 
         padres.set(0, mejorSolucion);
-        resultado[ 0 ] = mejorResult;
+        resultado.set(0, mejorResult);
 
         for ( int i = 1; i < numIndividuos; i ++ ) {
             construccionInicial(i);
@@ -328,20 +303,20 @@ public class Generacional {
 
     private boolean comprobarConvergencia () {
 
-        int[] auxiliar;
-        auxiliar = Arrays.copyOf(resultado, numIndividuos);
-        Arrays.sort(auxiliar);
+        List<Integer> auxiliar = new ArrayList<>();
+        auxiliar.addAll(resultado);
+        Collections.sort(auxiliar);
 
         int contador = 1;
         boolean convergencia = false;
         int maximo = Integer.MIN_VALUE;
 
-        for ( int i = 1; i < auxiliar.length; i ++ ) {
+        for ( int i = 1; i < auxiliar.size(); i ++ ) {
             if ( contador >= 16 ) {
                 convergencia = true;
                 break;
             }
-            if ( auxiliar[ i ] == (auxiliar[ i - 1 ]) ) {
+            if ( auxiliar.get(i) == (auxiliar.get(i - 1)) ) {
                 contador ++;
             } else {
                 contador = 1;
@@ -381,8 +356,8 @@ public class Generacional {
         int minimo = Integer.MAX_VALUE;
         int actual = 0;
         for ( int i = 0; i < numIndividuos; i ++ ) {
-            if ( resultado[ i ] < minimo ) {
-                minimo = resultado[ i ];
+            if ( resultado.get(i) < minimo ) {
+                minimo = resultado.get(i);
                 actual = i;
             }
         }
@@ -394,20 +369,20 @@ public class Generacional {
             }
         }
 
-        System.out.println(resultado[ actual ]);
+        System.out.println(resultado.get(actual));
     }
     
     public int resultadoFinal () {
         int minimo = Integer.MAX_VALUE;
         int actual = 0;
         for ( int i = 0; i < numIndividuos; i ++ ) {
-            if ( resultado[ i ] < minimo ) {
-                minimo = resultado[ i ];
+            if ( resultado.get(i) < minimo ) {
+                minimo = resultado.get(i);
                 actual = i;
             }
         }
         List<Integer> mejorIndividuo = padres.get(actual);
         
-        return resultado[actual];
+        return resultado.get(actual);
     }
 }

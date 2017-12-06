@@ -6,6 +6,7 @@
 package main;
 
 //import Algoritmos.P2.*;
+import Algoritmos.Memetico.Hibrido;
 import Utils.Restricciones;
 import Utils.listaTransmisores;
 import Utils.rangoFrec;
@@ -70,7 +71,6 @@ public class main {
 
         int cuentaArchivos = 0;
         float startTime;
-        boolean inicio = true;
         float endTime;
         float duration;
         int contador = 0;
@@ -93,22 +93,22 @@ public class main {
                         + "0.- Salir"
                         + "\n: ");
 
-                select = 1;//Integer.parseInt(scanner.nextLine());
+                select = Integer.parseInt(scanner.nextLine());
 
                 switch( select ) {
                     case 1:
-//                        System.out.println("Ejecucion "+contador+" de "+DIRECTORIO);
-//                        startTime = System.nanoTime();
-//                        Generacional.cruce = false;
-//                        Generacional generacional = new Generacional(transmisores, frecuencias, rest);
-//                        endTime = System.nanoTime();
-//                        int resultado = generacional.resultadoFinal();
-//                        
-//                        duration = (endTime - startTime) / 1000000000;
-//                        System.out.println("Resultado: "+resultado);
-//                        System.out.println("Tiempo de ejecucion: " + duration + " segundos");
+                        System.out.println("Ejecucion "+contador+" de "+DIRECTORIO);
+                        startTime = System.nanoTime();
+                        Hibrido memetico = new Hibrido(frecuencias.rangoFrecuencias, transmisores.transmisores, rest);
+                        memetico.algoritmo();                        
+                        endTime = System.nanoTime();
+                        memetico.resMejorIndividuo();
+                        //int resultado = memetico.resultadoFinal();
+                        
+                        duration = (endTime - startTime) / 1000000000;
+                        System.out.println("Tiempo de ejecucion: " + duration + " segundos");
 //                        escribirExcel(duration, resultado, lineaInicial, columnaInicial, archivos[cuentaArchivos]);
-//                        lineaInicial++;
+                        lineaInicial++;
                         break;
                     case 2:
 //                        System.out.println("Ejecucion G_BLX "+contador+" de "+DIRECTORIO+" en "+archivos[cuentaArchivos]);

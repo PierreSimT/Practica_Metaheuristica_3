@@ -16,7 +16,9 @@ import java.util.List;
  */
 public class Utilidades {
     
-            /**
+    
+    
+    /**
      * Funcion que devuelve una lista con las restricciones que puede satisfacer
      * un transmisor
      *
