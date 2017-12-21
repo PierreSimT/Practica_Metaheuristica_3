@@ -7,7 +7,6 @@ package Algoritmos.Memetico;
 
 import static Algoritmos.Memetico.Hibrido.*;
 import static Utils.Utilidades.*;
-import Utils.*;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,8 +31,6 @@ public class Generacional {
         
        for ( int i = 0; i < numIndividuos; i ++ ) {
             construccionInicial(i);
-            BusquedaLocal bl = new BusquedaLocal(i);
-            bl.algoritmo();
         }
        
     }
@@ -58,23 +55,33 @@ public class Generacional {
             cruzarIndividuos();
             mutarIndividuos();
             nuevaGeneracion();
+            numGeneraciones++;
         }
     }
     
     void construccionInicial ( int id ) throws FileNotFoundException {
         
         List <Integer> frecuenciasR = new ArrayList<>();
+        List<List<Integer>> listaRest = new ArrayList();
         Random numero = NUMERO;
         
         for ( int i = 0; i < transmisores.size(); i++ ) {
-            int indiceFrecAleatorio = numero.nextInt(frecuencias.get(transmisores.get(i)).size());
-            int frecAleatoria = frecuencias.get(transmisores.get(i)).get(indiceFrecAleatorio);
-            frecuenciasR.add(frecAleatoria);
+            listaRest = restricciones.restriccionesTransmisor(i);
+            if ( listaRest.size() > 0 ) {
+                int indiceFrecAleatorio = numero.nextInt(frecuencias.get(transmisores.get(i)).size());
+                int frecAleatoria = frecuencias.get(transmisores.get(i)).get(indiceFrecAleatorio);
+                frecuenciasR.add(frecAleatoria);
+            } else 
+                frecuenciasR.add(0);
         }
         
-        resultado.set(id, rDiferencia(frecuenciasR, restricciones));
+        int diferencia = rDiferencia(frecuenciasR, restricciones);
+        resultado.set(id, diferencia);
         padres.get(id).addAll(frecuenciasR);
         frecuenciasR.clear();
+        
+        BusquedaLocal bl = new BusquedaLocal(id);
+        bl.algoritmo();
         
     }
 
@@ -93,6 +100,7 @@ public class Generacional {
                 hijos.add(i, padres.get(seleccionado2));
             }
         }
+        
     }
 
     void cruzarIndividuos () {
@@ -110,7 +118,7 @@ public class Generacional {
     final double alfa = 0.5;
     void mutarIndividuos () {
         //Mutamos solo un individuo
-
+        
         //Seleccionamos el individuo a mutar
         Random numero = NUMERO;
         int seleccionado = numero.nextInt(numIndividuos);
@@ -126,6 +134,7 @@ public class Generacional {
     }
 
     void algBX ( int individuo1, int individuo2 ) {
+        
         List<Integer> solucion1 = new ArrayList<>();
         List<Integer> solucion2 = new ArrayList<>();
 
@@ -205,7 +214,7 @@ public class Generacional {
         // Evaluamos los hijos
         // Evaluamos los hijos
         if ( idMutado <= 14 ) {
-            resultadoHijos = evaluar(hijos, 14);
+            resultadoHijos = evaluar(hijos, idMutado);
             numEvaluaciones += 14;
         } else {
             resultadoHijos = evaluar(hijos, idMutado);
@@ -218,6 +227,7 @@ public class Generacional {
             }
         }
 
+        
         //Buscamos el hijo con el mayor coste
         int maximo = Integer.MIN_VALUE;
         int actual2 = 0;
@@ -242,13 +252,16 @@ public class Generacional {
         hijos.clear();
 
         for ( int i = 0; i < resultado.size(); i ++ ) {
-            resultado.set(i, resultadoHijos[ i ]); //rDiferencia(padres.get(i), restricciones);
-            if ( resultado.get(i) < mejorResult ) {
-                mejorResult = resultado.get(i);
-                idMejorResult = i;
-            }
+            if ( resultadoHijos[i] != 0 ) {
+                resultado.set(i, resultadoHijos[ i ]); //rDiferencia(padres.get(i), restricciones);
+                if ( resultado.get(i) < mejorResult ) {
+                    mejorResult = resultado.get(i);
+                    idMejorResult = i;
+                }
+            } else
+                resultado.set(i, rDiferencia(padres.get(i), restricciones));
         }
-
+        
         if ( aux == mejorResult ) {
             numEstancamiento ++;
         } else {
@@ -256,24 +269,23 @@ public class Generacional {
         }
 
         if ( numEstancamiento >= 20 || comprobarConvergencia() ) {
+            System.out.println("Reinicializacion\n\n");
             reinicializacion();
             numEstancamiento = 0;
         }
-        
-        numGeneraciones++;
     }
 
     public int[] evaluar ( List<List<Integer>> individuos, int mutado ) throws FileNotFoundException {
-        int[] resultados = new int[ numIndividuos ];
+        int[] result = new int[ numIndividuos ];
 
         for ( int i = 0; i < 14; i ++ ) {
-            resultados[ i ] = rDiferencia(individuos.get(i), restricciones);
+            result[ i ] = rDiferencia(individuos.get(i), restricciones);
         }
         if ( idMutado >= 14 ) {
-            resultados[ mutado ] = rDiferencia(individuos.get(mutado), restricciones);
+            result[ mutado ] = rDiferencia(individuos.get(mutado), restricciones);
         }
 
-        return resultados;
+        return result;
     }
 
     private void reinicializacion () throws FileNotFoundException {
@@ -303,7 +315,6 @@ public class Generacional {
 
         int contador = 1;
         boolean convergencia = false;
-        int maximo = Integer.MIN_VALUE;
 
         for ( int i = 1; i < auxiliar.size(); i ++ ) {
             if ( contador >= 16 ) {

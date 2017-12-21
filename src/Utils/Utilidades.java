@@ -98,7 +98,7 @@ public class Utilidades {
             int tr1 = listaRest.get(i).get(0);
             int tr2 = listaRest.get(i).get(1);
 
-            if ( tr1 == cambioTransmisor + 1 || tr2 == cambioTransmisor + 1 ) {
+            if ( tr1-1 == cambioTransmisor || tr2-1 == cambioTransmisor ) {
                 int diferencia = listaRest.get(i).get(2);
                 int result = listaRest.get(i).get(3);
 

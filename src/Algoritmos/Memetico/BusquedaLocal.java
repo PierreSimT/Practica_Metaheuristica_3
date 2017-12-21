@@ -21,11 +21,15 @@ public class BusquedaLocal {
 
     public static int numIteraciones = 200;
     int id;
-    List<Integer> frecuenciasR; // Cada posicion es la frecuencia asignada a dicho transmisor
+    //List<Integer> frecuenciasR; // Cada posicion es la frecuencia asignada a dicho transmisor
 
     public BusquedaLocal ( int _id ) {
-        
-        frecuenciasR = padres.get(id);
+//        for ( int i = 0; i < numIndividuos; i++ ) {
+//            System.out.println("Resultado "+i+" "+resultado.get(i));
+//            if ( resultado.get(i) < 0 ) 
+//                System.out.println("Ejecucion "+ejecucion);
+//        }
+        //frecuenciasR = padres.get(id);
         id = _id;
         
     }
@@ -54,12 +58,14 @@ public class BusquedaLocal {
      * solución
      *
      */
-    public void algoritmo () throws FileNotFoundException {
+    public void algoritmo () throws FileNotFoundException {    
+        //System.out.println("PADRE "+id);
         Random numero = NUMERO;
         int token = numero.nextInt(transmisores.size());
         for ( int i = 0; i < numIteraciones; i ++ ) {
+            List<Integer> nuevaSolucion = new ArrayList<>();
             double sentido = numero.nextDouble();
-            int valorInicial = frecuenciasR.get(token); // Se obtiene la frecuencia del token
+            int valorInicial = padres.get(id).get(token); // Se obtiene la frecuencia del token
             int indiceInicial;
             int nuevoCoste = Integer.MAX_VALUE;
 
@@ -67,39 +73,58 @@ public class BusquedaLocal {
 
             if ( sentido < 0.5 ) {
                 boolean encontrado = false;
-                while( indiceInicial >= 0 &&  ! encontrado ) {
-                    int fact1 = rDiferencia(frecuenciasR, token, restricciones);
+                List<List<Integer>> listaRest = new ArrayList<>();
+                listaRest = restricciones.restriccionesTransmisor(token);
+                while( indiceInicial >= 0 &&  ! encontrado && listaRest.size() > 0 ) {
+                    int fact1 = rDiferencia(padres.get(id), token, restricciones);
                     valorInicial = frecuencias.get(transmisores.get(token)).get(indiceInicial);
-                    List<Integer> nuevaSolucion = new ArrayList<>();
-                    nuevaSolucion.addAll(frecuenciasR);
+                    nuevaSolucion.addAll(padres.get(id));
                     nuevaSolucion.set(token, valorInicial);
                     int fact2 = rDiferencia(nuevaSolucion, token, restricciones);
-                    nuevoCoste = resultado.get(id) + (fact2 - fact1);
+                    nuevoCoste = rDiferencia(nuevaSolucion, restricciones);//resultado.get(id) - fact1 + fact2;
 
+                    if ( nuevoCoste < 0 ) {
+                        System.out.print("");
+                    }
+                    
                     if ( nuevoCoste < resultado.get(id) ) {
-                        frecuenciasR.set(token, valorInicial);
+                        //System.out.println("Cambio transmisor: "+token+" frecuencia: "+
+                        //        padres.get(id).get(token)+"por "+valorInicial+" resultado: "
+                        //        +resultado.get(id)+" por "+nuevoCoste);
+                        padres.get(id).set(token, valorInicial);
                         resultado.set(id, nuevoCoste);
                         encontrado = true;
                     }
                     indiceInicial --;
+                    nuevaSolucion.clear();
                 }
             } else {
                 boolean encontrado = false;
-                while( indiceInicial < frecuencias.get(transmisores.get(token)).size() &&  ! encontrado ) {
-                    int fact1 = rDiferencia(frecuenciasR, token, restricciones);
+                List<List<Integer>> listaRest = new ArrayList<>();
+                listaRest = restricciones.restriccionesTransmisor(token);
+                while( indiceInicial < frecuencias.get(transmisores.get(token)).size() 
+                        &&  ! encontrado && listaRest.size() > 0 ) {
+                    int fact1 = rDiferencia(padres.get(id), token, restricciones);
                     valorInicial = frecuencias.get(transmisores.get(token)).get(indiceInicial);
-                    List<Integer> nuevaSolucion = new ArrayList<>();
-                    nuevaSolucion.addAll(frecuenciasR);
+                    nuevaSolucion.addAll(padres.get(id));
                     nuevaSolucion.set(token, valorInicial);
                     int fact2 = rDiferencia(nuevaSolucion, token, restricciones);
-                    nuevoCoste = resultado.get(id) + (fact2 - fact1);
+                    nuevoCoste = rDiferencia(nuevaSolucion, restricciones);//resultado.get(id) - fact1 + fact2;
 
+                    if ( nuevoCoste < 0 ) {
+                        System.out.print("");
+                    }
+                    
                     if ( nuevoCoste < resultado.get(id) ) {
-                        frecuenciasR.set(token, valorInicial);
+                        //System.out.println("Cambio transmisor: "+token+" frecuencia: "+
+                        //        padres.get(id).get(token)+"por "+valorInicial+" resultado: "
+                        //        +resultado.get(id)+" por "+nuevoCoste);
+                        padres.get(id).set(token, valorInicial);
                         resultado.set(id, nuevoCoste);
                         encontrado = true;
                     }
                     indiceInicial ++;
+                    nuevaSolucion.clear();
                 }
             }
             token = Math.floorMod(token + 1, transmisores.size());
@@ -116,10 +141,10 @@ public class BusquedaLocal {
         for ( int i = 0; i < transmisores.size(); i ++ ) {
             listaTrans = restricciones.restriccionesTransmisor(i);
             if ( listaTrans.size() > 0 ) {
-                System.out.println("Transmisor " + (i + 1) + ": " + frecuenciasR.get(i));
+                System.out.println("Transmisor " + (i + 1) + ": " + padres.get(id).get(i));
             }
         }
-        System.out.println("Coste: " + rDiferencia(frecuenciasR, restricciones));
+        System.out.println("Coste: " + rDiferencia(padres.get(id), restricciones));
     }
 
 }

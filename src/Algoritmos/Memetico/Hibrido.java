@@ -6,6 +6,7 @@
 package Algoritmos.Memetico;
 
 import Utils.Restricciones;
+import static Utils.Utilidades.rDiferencia;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ public class Hibrido {
     protected static int numIndividuos = 20;
     protected static int numEvaluaciones = 0;
     protected static int numGeneraciones = 0;
+    protected static int ejecucion = 0;
     
     protected static List<Integer> resultado = new ArrayList<>();
     protected static List<List<Integer>> padres = new ArrayList<>();
@@ -49,10 +51,11 @@ public class Hibrido {
             
             genetico.algoritmo();
             for ( int i = 0; i < numIndividuos; i++ ){
+                System.out.print(i+" ");
                 BusquedaLocal bl = new BusquedaLocal (i);
                 bl.algoritmo();
             }
-            
+            ejecucion++;
         }
         
     }
@@ -67,14 +70,16 @@ public class Hibrido {
         }
     }
     List<Integer> mejorIndividuo = padres.get(actual);
-
+    List<List<Integer>> listaRest = new ArrayList<>();
+    
     for ( int i = 0; i < mejorIndividuo.size(); i ++ ) {
-        if ( mejorIndividuo.get(i) != 0 ) {
+        listaRest = restricciones.restriccionesTransmisor(i);
+        if ( listaRest.size() > 0 ) {
             System.out.println("Transmisor " + (i + 1) + ": " + mejorIndividuo.get(i));
         }
     }
 
-    System.out.println(resultado.get(actual));
+    System.out.println(rDiferencia(mejorIndividuo, restricciones));
 }
     
 }
