@@ -84,19 +84,10 @@ public class BusquedaLocal {
                         nuevaSolucion.addAll(padres.get(id));
                         nuevaSolucion.set(token, valorInicial);
                         int fact2 = rDiferencia(nuevaSolucion, token, restricciones);
-                        //int pruebaCoste = rDiferencia(nuevaSolucion, restricciones);
-                        nuevoCoste = resultado.get(id) - fact1 + fact2;
 
-                        if ( nuevoCoste < 0 ) {
-                            System.out.print("MENOR QUE 0");
-                        }
-
-                        if ( nuevoCoste < resultado.get(id) ) {
-                            //System.out.println("Cambio transmisor: "+token+" frecuencia: "+
-                            //        padres.get(id).get(token)+"por "+valorInicial+" resultado: "
-                            //        +resultado.get(id)+" por "+nuevoCoste);
+                        if ( fact2 < fact1 ) {
                             padres.get(id).set(token, valorInicial);
-                            resultado.set(id, nuevoCoste);
+                            resultado.set(id, rDiferencia(nuevaSolucion, restricciones));
                             encontrado = true;
                         }
                         indiceInicial = Math.floorMod(indiceInicial-1, frecuencias.get(transmisores.get(token)).size());
@@ -111,19 +102,10 @@ public class BusquedaLocal {
                         nuevaSolucion.addAll(padres.get(id));
                         nuevaSolucion.set(token, valorInicial);
                         int fact2 = rDiferencia(nuevaSolucion, token, restricciones);
-//                        int pruebaCoste = rDiferencia(nuevaSolucion, restricciones);
-                        nuevoCoste = resultado.get(id) - fact1 + fact2;
 
-                        if ( nuevoCoste < 0 ) {
-                            System.out.print("MENOR QUE 0");
-                        }
-
-                        if ( nuevoCoste < resultado.get(id) ) {
-                            //System.out.println("Cambio transmisor: "+token+" frecuencia: "+
-                            //        padres.get(id).get(token)+"por "+valorInicial+" resultado: "
-                            //        +resultado.get(id)+" por "+nuevoCoste);
+                        if ( fact2 < fact1 ) {
                             padres.get(id).set(token, valorInicial);
-                            resultado.set(id, nuevoCoste);
+                            resultado.set(id, rDiferencia(nuevaSolucion, restricciones));
                             encontrado = true;
                         }
                         indiceInicial = Math.floorMod(indiceInicial+1, frecuencias.get(transmisores.get(token)).size());

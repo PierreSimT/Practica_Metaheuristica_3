@@ -9,13 +9,19 @@ import Utils.Restricciones;
 import static Utils.Utilidades.rDiferencia;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import static main.main.NUMERO;
 
 /**
  *
  * @author ptondreau
  */
 public class Hibrido {
+    
+    public static boolean AM1 = false;
+    public static boolean AM2 = false;
+    public static boolean AM3 = false;
     
     protected static int numIndividuos = 20;
     protected static int numEvaluaciones = 0;
@@ -50,11 +56,32 @@ public class Hibrido {
         while ( numEvaluaciones < 20000 ) {
             System.out.println("Ejecucion de generacional");
             genetico.algoritmo();
-            for ( int i = 0; i < numIndividuos; i++ ){
-                System.out.print(i+" ");
-                BusquedaLocal bl = new BusquedaLocal (i);
-                bl.algoritmo();
-                System.out.println();
+            if ( AM1 ) {
+                for ( int i = 0; i < numIndividuos; i++ ){
+                    System.out.print(i+" ");
+                    BusquedaLocal bl = new BusquedaLocal (i);
+                    bl.algoritmo();
+                    System.out.println();
+                }
+            } else if ( AM2 ) {
+                for ( int i = 0; i < numIndividuos*0.1; i++ ){
+                    int numAleatorio = NUMERO.nextInt(numIndividuos);
+                    BusquedaLocal bl = new BusquedaLocal (numAleatorio);
+                    bl.algoritmo();
+                }
+            } else {
+                List<Integer> auxR = new ArrayList<>();
+                List<Integer> auxR2 = new ArrayList<>();
+                auxR2.addAll(resultado);
+                auxR.addAll(resultado);
+                Collections.sort(auxR);
+
+                for ( int i = 0; i < numIndividuos*0.1; i++ ){                 
+                    int indice = auxR2.indexOf(auxR.get(i));
+                    auxR2.remove(indice);
+                    BusquedaLocal bl = new BusquedaLocal (indice);
+                    bl.algoritmo();
+                }
             }
             ejecucion++;
         }

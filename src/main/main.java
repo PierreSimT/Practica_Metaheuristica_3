@@ -97,6 +97,7 @@ public class main {
                     case 1:
                         System.out.println("Ejecucion "+contador+" de "+DIRECTORIO);
                         startTime = System.nanoTime();
+                        Hibrido.AM1 = true;
                         Hibrido memetico = new Hibrido(frecuencias.rangoFrecuencias, transmisores.transmisores, rest);
                         memetico.algoritmo();                        
                         endTime = System.nanoTime();
@@ -107,34 +108,38 @@ public class main {
                         System.out.println("Tiempo de ejecucion: " + duration + " segundos");
 //                        escribirExcel(duration, resultado, lineaInicial, columnaInicial, archivos[cuentaArchivos]);
                         lineaInicial++;
+                        Hibrido.AM1 = false;
                         break;
                     case 2:
-//                        System.out.println("Ejecucion G_BLX "+contador+" de "+DIRECTORIO+" en "+archivos[cuentaArchivos]);
-//                        startTime = System.nanoTime();
-//                        Generacional.cruce = true;
-//                        generacional = new Generacional(transmisores, frecuencias, rest);
-//                        endTime = System.nanoTime();
-////                        generacional.resMejorIndividuo();
-//                        resultado = generacional.resultadoFinal();
-//                                
-//                        duration = (endTime - startTime) / 1000000000;
-//                        System.out.println("Tiempo de ejecucion: " + duration + " segundos");
+                        Hibrido.AM2 = true;
+                        System.out.println("Ejecucion "+contador+" de "+DIRECTORIO);
+                        startTime = System.nanoTime();
+                        memetico = new Hibrido(frecuencias.rangoFrecuencias, transmisores.transmisores, rest);
+                        memetico.algoritmo();                        
+                        endTime = System.nanoTime();
+                        memetico.resMejorIndividuo();
+                        //int resultado = memetico.resultadoFinal();
+                        
+                        duration = (endTime - startTime) / 1000000000;
+                        System.out.println("Tiempo de ejecucion: " + duration + " segundos");
 //                        escribirExcel(duration, resultado, lineaInicial, columnaInicial, archivos[cuentaArchivos]);
-//                        lineaInicial++;
+                        lineaInicial++;
+                        Hibrido.AM2 = false;
                         break;
                     case 3:
-//                        System.out.println("Ejecucion E_2P "+contador+" de "+DIRECTORIO+" en "+archivos[cuentaArchivos]);
-//                        startTime = System.nanoTime();
-//                        Estacionario.cruce = false;
-//                        Estacionario estacionario = new Estacionario(transmisores, frecuencias, rest);
-//                        endTime = System.nanoTime();
-//                        resultado = estacionario.resultadoFinal();
-//                        
-////                        estacionario.resMejorIndividuo();
-//                        duration = (endTime - startTime) / 1000000000;
-//                        System.out.println("Tiempo de ejecucion: " + duration + " segundos");
+                        Hibrido.AM3 = true;
+                        System.out.println("Ejecucion "+contador+" de "+DIRECTORIO);
+                        startTime = System.nanoTime();
+                        memetico = new Hibrido(frecuencias.rangoFrecuencias, transmisores.transmisores, rest);
+                        memetico.algoritmo();                        
+                        endTime = System.nanoTime();
+                        memetico.resMejorIndividuo();
+                        
+                        duration = (endTime - startTime) / 1000000000;
+                        System.out.println("Tiempo de ejecucion: " + duration + " segundos");
 //                        escribirExcel(duration, resultado, lineaInicial, columnaInicial, archivos[cuentaArchivos]);
-//                        lineaInicial++;
+                        lineaInicial++;
+                        Hibrido.AM3 = false;
                         break;
                     case 4:
                         System.out.println("Conjunto de archivos que quiere usar: ");

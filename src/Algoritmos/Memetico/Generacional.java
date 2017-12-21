@@ -34,17 +34,6 @@ public class Generacional {
         }
        
     }
-    
-//    public Generacional ( listaTransmisores _transmisores, rangoFrec _frecuencias, Restricciones _rest ) {
-//        frecuencias = _frecuencias.rangoFrecuencias;
-//        transmisores = _transmisores.transmisores;
-//        restricciones = _rest;
-//
-//        for ( int i = 0; i < numIndividuos; i ++ ) {
-//            padres.add(new ArrayList<>());
-//        }
-//
-//    }
 
     void algoritmo () throws FileNotFoundException {
         
@@ -89,10 +78,12 @@ public class Generacional {
         for ( int i = 0; i < numIndividuos; i ++ ) {
             Random numero = NUMERO;
             int seleccionado = numero.nextInt(numIndividuos);
-
             Random numero2 = NUMERO;
-            int seleccionado2 = numero.nextInt(numIndividuos);
-
+            int seleccionado2 = numero2.nextInt(numIndividuos);
+            
+            while ( seleccionado == seleccionado2 ) {
+                seleccionado2 = numero2.nextInt(numIndividuos);
+            }
             if ( resultado.get(seleccionado) < resultado.get(seleccionado2) ) {
                 hijos.add(i, padres.get(seleccionado));
 
@@ -105,11 +96,13 @@ public class Generacional {
 
     void cruzarIndividuos () {
         int cont = 0;
-        while( cont < numParejas ) {
+        int numEmparejado = 0;
+        while( numEmparejado < numParejas ) {
             int individuo1 = cont;
             int individuo2 = cont + 1;
             algBX(individuo1, individuo2);
             cont += 2;
+            numEmparejado++;
         }
 
     }
