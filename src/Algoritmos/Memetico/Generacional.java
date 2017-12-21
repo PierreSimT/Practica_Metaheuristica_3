@@ -34,17 +34,6 @@ public class Generacional {
         }
        
     }
-    
-//    public Generacional ( listaTransmisores _transmisores, rangoFrec _frecuencias, Restricciones _rest ) {
-//        frecuencias = _frecuencias.rangoFrecuencias;
-//        transmisores = _transmisores.transmisores;
-//        restricciones = _rest;
-//
-//        for ( int i = 0; i < numIndividuos; i ++ ) {
-//            padres.add(new ArrayList<>());
-//        }
-//
-//    }
 
     void algoritmo () throws FileNotFoundException {
         
@@ -109,7 +98,7 @@ public class Generacional {
             int individuo1 = cont;
             int individuo2 = cont + 1;
             algBX(individuo1, individuo2);
-            cont += 2;
+            cont++;
         }
 
     }
