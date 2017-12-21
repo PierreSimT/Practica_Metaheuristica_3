@@ -28,9 +28,9 @@ public class Hibrido {
     protected static int numGeneraciones = 0;
     protected static int ejecucion = 0;
     
-    protected static List<Integer> resultado = new ArrayList<>();
-    protected static List<List<Integer>> padres = new ArrayList<>();
-    protected static List<List<Integer>> hijos = new ArrayList<>();
+    protected static List<Integer> resultado;
+    protected static List<List<Integer>> padres;
+    protected static List<List<Integer>> hijos;
     
     protected static List<List<Integer>> frecuencias = new ArrayList<>();
     protected static List<Integer> transmisores = new ArrayList<>();
@@ -38,6 +38,14 @@ public class Hibrido {
     
     public Hibrido ( List<List<Integer>> _frecuencias, List<Integer> _transmisores,
             Restricciones _restricciones ){
+        
+        resultado = new ArrayList<>();
+        padres = new ArrayList<>();
+        hijos = new ArrayList();
+
+        ejecucion = 0;
+        numGeneraciones = 0;
+        numEvaluaciones = 0;
         
         frecuencias = _frecuencias;
         transmisores = _transmisores;
@@ -54,14 +62,14 @@ public class Hibrido {
         
         Generacional genetico = new Generacional ();
         while ( numEvaluaciones < 20000 ) {
-            System.out.println("Ejecucion de generacional");
+//            System.out.println("Ejecucion de generacional");
             genetico.algoritmo();
             if ( AM1 ) {
                 for ( int i = 0; i < numIndividuos; i++ ){
-                    System.out.print(i+" ");
+//                    System.out.print(i+" ");
                     BusquedaLocal bl = new BusquedaLocal (i);
                     bl.algoritmo();
-                    System.out.println();
+//                    System.out.println();
                 }
             } else if ( AM2 ) {
                 for ( int i = 0; i < numIndividuos*0.1; i++ ){
@@ -89,25 +97,35 @@ public class Hibrido {
     }
     
     public void resMejorIndividuo () throws FileNotFoundException {
-    int minimo = Integer.MAX_VALUE;
-    int actual = 0;
-    for ( int i = 0; i < numIndividuos; i ++ ) {
-        if ( resultado.get(i) < minimo ) {
-            minimo = resultado.get(i);
-            actual = i;
+        int minimo = Integer.MAX_VALUE;
+        int actual = 0;
+        for ( int i = 0; i < numIndividuos; i ++ ) {
+            if ( resultado.get(i) < minimo ) {
+                minimo = resultado.get(i);
+                actual = i;
+            }
         }
-    }
-    List<Integer> mejorIndividuo = padres.get(actual);
-    List<List<Integer>> listaRest = new ArrayList<>();
-    
-    for ( int i = 0; i < mejorIndividuo.size(); i ++ ) {
-        listaRest = restricciones.restriccionesTransmisor(i);
-        if ( listaRest.size() > 0 ) {
-            System.out.println("Transmisor " + (i + 1) + ": " + mejorIndividuo.get(i));
-        }
-    }
+        List<Integer> mejorIndividuo = padres.get(actual);
+        List<List<Integer>> listaRest = new ArrayList<>();
 
-    System.out.println(minimo);
-}
+        for ( int i = 0; i < padres.get(actual).size()-1; i ++ ) {
+            System.out.println("Transmisor " + (i + 1) + ": " + padres.get(actual).get(i));
+        }
+
+        System.out.println(minimo);
+    }
+    
+    public int resultadoFinal() {
+        int minimo = Integer.MAX_VALUE;
+        int actual = 0;
+        for ( int i = 0; i < numIndividuos; i ++ ) {
+            if ( resultado.get(i) < minimo ) {
+                minimo = resultado.get(i);
+                actual = i;
+            }
+        }
+        
+        return minimo;
+    }
     
 }

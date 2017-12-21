@@ -258,7 +258,6 @@ public class Generacional {
         }
 
         if ( numEstancamiento >= 20 || comprobarConvergencia() ) {
-            System.out.println("Reinicializacion\n\n");
             reinicializacion();
             numEstancamiento = 0;
         }

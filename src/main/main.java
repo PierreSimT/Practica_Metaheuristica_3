@@ -11,13 +11,17 @@ import Utils.Restricciones;
 import Utils.listaTransmisores;
 import Utils.rangoFrec;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Random;
 import java.util.Scanner;
-//import org.apache.poi.hssf.usermodel.HSSFSheet;
-//import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-//import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 
 /**
@@ -30,9 +34,9 @@ public class main {
     public static String TRABAJO;
     public static Integer LINEAS;
     public static Random NUMERO;
-//    public static String DIRECTORIOS [] = { /*"scen06", "scen07", "scen08", "scen09", "scen10", "graph05", "graph06", "graph07", */ "graph12" };
+    public static String DIRECTORIOS [] = { /*"scen06", "scen07", "scen08", "scen09", "scen10", "graph05", "graph06", "graph07",*/ "graph11", "graph12" };
     public static Integer SEMILLAS[] = {3181827, 1818273, 8182731, 1827318, 8273181};
-//    public static String archivos [] =  {"Generacional_2Puntos.xls", "Estacionario_2Puntos.xls", "Estacionario_BLX.xls" };
+    public static String archivos [] =  {"AM_10_1.xlsx", "AM_10_01.xlsx", "AM_10_01_mej.xlsx" };
     
     //Variables para el menu
     static Scanner scanner = new Scanner(System.in);
@@ -46,13 +50,8 @@ public class main {
     public static void main ( String[] args ) throws FileNotFoundException, IOException {
         
         int lineaInicial = 2;
-        int columnaInicial = 1;
+        int columnaInicial = 18;
         int cuentaDirectorios = 0;
-        
-        int prueba = 0;
-        while ( prueba < 9) {
-            prueba += 2;
-        }
         
         NUMERO = new Random();
 
@@ -60,7 +59,7 @@ public class main {
 
         System.out.println("Conjunto de archivos que quiere usar: ");
         Scanner reader = new Scanner(System.in);
-        DIRECTORIO =  reader.nextLine(); //DIRECTORIOS[cuentaDirectorios];
+        DIRECTORIO =  DIRECTORIOS[cuentaDirectorios]; //reader.nextLine(); 
         LINEAS = countLines(DIRECTORIO)+1;
 
         rangoFrec frecuencias = new rangoFrec();
@@ -73,6 +72,7 @@ public class main {
         float duration;
         int contador = 0;
         int semilla = 0;
+        select = 1;
         while( select != 0 ) {
 
             if ( semilla == 0 ) {
@@ -91,7 +91,7 @@ public class main {
                         + "0.- Salir"
                         + "\n: ");
 
-                select = Integer.parseInt(scanner.nextLine());
+                //select = 1;//Integer.parseInt(scanner.nextLine());
 
                 switch( select ) {
                     case 1:
@@ -101,12 +101,12 @@ public class main {
                         Hibrido memetico = new Hibrido(frecuencias.rangoFrecuencias, transmisores.transmisores, rest);
                         memetico.algoritmo();                        
                         endTime = System.nanoTime();
-                        memetico.resMejorIndividuo();
-                        //int resultado = memetico.resultadoFinal();
+//                        memetico.resMejorIndividuo();
+                        int resultado = memetico.resultadoFinal();
                         
                         duration = (endTime - startTime) / 1000000000;
-                        System.out.println("Tiempo de ejecucion: " + duration + " segundos");
-//                        escribirExcel(duration, resultado, lineaInicial, columnaInicial, archivos[cuentaArchivos]);
+                        System.out.println("Tiempo de ejecucion: " + duration + " segundos ; resultado : "+resultado+" en archivo "+archivos[cuentaArchivos]+" algoritmo "+select);
+                        escribirExcel(duration, resultado, lineaInicial, columnaInicial, archivos[cuentaArchivos]);
                         lineaInicial++;
                         Hibrido.AM1 = false;
                         break;
@@ -117,12 +117,12 @@ public class main {
                         memetico = new Hibrido(frecuencias.rangoFrecuencias, transmisores.transmisores, rest);
                         memetico.algoritmo();                        
                         endTime = System.nanoTime();
-                        memetico.resMejorIndividuo();
-                        //int resultado = memetico.resultadoFinal();
+//                        memetico.resMejorIndividuo();
+                        resultado = memetico.resultadoFinal();
                         
                         duration = (endTime - startTime) / 1000000000;
-                        System.out.println("Tiempo de ejecucion: " + duration + " segundos");
-//                        escribirExcel(duration, resultado, lineaInicial, columnaInicial, archivos[cuentaArchivos]);
+                        System.out.println("Tiempo de ejecucion: " + duration + " segundos ; resultado : "+resultado+" en archivo "+archivos[cuentaArchivos]+" algoritmo "+select);
+                        escribirExcel(duration, resultado, lineaInicial, columnaInicial, archivos[cuentaArchivos]);
                         lineaInicial++;
                         Hibrido.AM2 = false;
                         break;
@@ -133,11 +133,12 @@ public class main {
                         memetico = new Hibrido(frecuencias.rangoFrecuencias, transmisores.transmisores, rest);
                         memetico.algoritmo();                        
                         endTime = System.nanoTime();
-                        memetico.resMejorIndividuo();
+//                        memetico.resMejorIndividuo();
+                        resultado = memetico.resultadoFinal();
                         
                         duration = (endTime - startTime) / 1000000000;
-                        System.out.println("Tiempo de ejecucion: " + duration + " segundos");
-//                        escribirExcel(duration, resultado, lineaInicial, columnaInicial, archivos[cuentaArchivos]);
+                        System.out.println("Tiempo de ejecucion: " + duration + " segundos ; resultado : "+resultado+" en archivo "+archivos[cuentaArchivos]+" algoritmo "+select);
+                        escribirExcel(duration, resultado, lineaInicial, columnaInicial, archivos[cuentaArchivos]);
                         lineaInicial++;
                         Hibrido.AM3 = false;
                         break;
@@ -170,25 +171,27 @@ public class main {
 //                System.out.println("Uoop! Error! " + e.toString());
 //            }
             
-//            if ( contador == 4 ) {
-//                cuentaDirectorios = Math.floorMod(cuentaDirectorios + 1, 8);
-//                DIRECTORIO = DIRECTORIOS[cuentaDirectorios];
-//                LINEAS = countLines(DIRECTORIO) + 1;
-//                frecuencias = new rangoFrec();
-//                transmisores = new listaTransmisores();
-//                rest = new Restricciones ();
-//                
-//                lineaInicial = 2;
-//                columnaInicial = columnaInicial + 2;
-//                
-//                if ( cuentaDirectorios == 0 ) {
-//                    columnaInicial = 1;
-//                    cuentaArchivos += 1;
-//                    select += 1;
-//                }
-//                if ( cuentaArchivos == 1 )
-//                    select = 0;
-//            }
+            if ( contador == 4 ) {
+                cuentaDirectorios = Math.floorMod(cuentaDirectorios + 1, 2);
+                DIRECTORIO = DIRECTORIOS[cuentaDirectorios];
+                LINEAS = countLines(DIRECTORIO) + 1;
+                frecuencias = new rangoFrec();
+                transmisores = new listaTransmisores();
+                rest = new Restricciones ();
+                
+                lineaInicial = 2;
+                columnaInicial = columnaInicial + 2;
+                
+                if ( cuentaDirectorios == 0 ) {
+                    columnaInicial = 1;
+                    cuentaArchivos += 1;
+                    select += 1;
+                }
+                
+                if ( select == 2 ) {
+                    select = 0;
+                }
+            }
             
             contador = Math.floorMod(contador + 1, 5);
         }
@@ -209,26 +212,27 @@ public class main {
         return ultimoTransmisor;
     }
 
-//    private static void escribirExcel (float duration, int resultado, int linea, int columna, String archivo) throws FileNotFoundException, IOException {
-//        FileInputStream archivoXLS = new FileInputStream (new File(System.getProperty("user.dir")+"/"+archivo));
-//        
-//        HSSFWorkbook libro = new HSSFWorkbook(archivoXLS);
-//
-//        HSSFSheet hoja = libro.getSheetAt(0);
-//
-//        Cell cell = null;
-//        
-//        cell = hoja.getRow(linea).getCell(columna);
-//        cell.setCellValue(resultado);
-//        cell = hoja.getRow(linea).getCell(columna+1);
-//        cell.setCellValue(duration);
-//
-//        archivoXLS.close();
-//
-//        FileOutputStream archivoOutXLS = new FileOutputStream (new File(System.getProperty("user.dir")+"/"+archivo));
-//        
-//        libro.write(archivoOutXLS);
-//        
-//        archivoOutXLS.close();
-//    }
+    private static void escribirExcel (float duration, int resultado, int linea, int columna, String archivo) throws FileNotFoundException, IOException {
+        
+        FileInputStream archivoXLS = new FileInputStream (new File(System.getProperty("user.dir")+"/"+archivo));
+        
+        XSSFWorkbook libro = new XSSFWorkbook(archivoXLS);
+
+        XSSFSheet hoja = libro.getSheetAt(0);
+
+        Cell cell = null;
+        
+        cell = hoja.getRow(linea).getCell(columna);
+        cell.setCellValue(resultado);
+        cell = hoja.getRow(linea).getCell(columna+1);
+        cell.setCellValue(duration);
+
+        archivoXLS.close();
+
+        FileOutputStream archivoOutXLS = new FileOutputStream (new File(System.getProperty("user.dir")+"/"+archivo));
+        
+        libro.write(archivoOutXLS);
+        
+        archivoOutXLS.close();
+    }
 }
