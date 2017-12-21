@@ -48,12 +48,13 @@ public class Hibrido {
         
         Generacional genetico = new Generacional ();
         while ( numEvaluaciones < 20000 ) {
-            
+            System.out.println("Ejecucion de generacional");
             genetico.algoritmo();
             for ( int i = 0; i < numIndividuos; i++ ){
                 System.out.print(i+" ");
                 BusquedaLocal bl = new BusquedaLocal (i);
                 bl.algoritmo();
+                System.out.println();
             }
             ejecucion++;
         }
@@ -79,7 +80,7 @@ public class Hibrido {
         }
     }
 
-    System.out.println(rDiferencia(mejorIndividuo, restricciones));
+    System.out.println(minimo);
 }
     
 }

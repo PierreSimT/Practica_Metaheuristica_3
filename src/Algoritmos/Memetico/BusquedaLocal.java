@@ -70,66 +70,70 @@ public class BusquedaLocal {
             int nuevoCoste = Integer.MAX_VALUE;
 
             indiceInicial = frecuencias.get(transmisores.get(token)).indexOf(valorInicial); // Mas corto que codigo de abajo
+            int indiceOriginal = indiceInicial;
+            
+            List<List<Integer>> listaRest = new ArrayList<>();
+            listaRest = restricciones.restriccionesTransmisor(token);
+            if ( listaRest.size() > 0 ) {
+                if ( sentido < 0.5 ) {
+                    boolean encontrado = false;
+                    indiceInicial = Math.floorMod(indiceInicial-1, frecuencias.get(transmisores.get(token)).size());
+                    while( ! encontrado && indiceInicial != indiceOriginal ) {
+                        int fact1 = rDiferencia(padres.get(id), token, restricciones);
+                        valorInicial = frecuencias.get(transmisores.get(token)).get(indiceInicial);
+                        nuevaSolucion.addAll(padres.get(id));
+                        nuevaSolucion.set(token, valorInicial);
+                        int fact2 = rDiferencia(nuevaSolucion, token, restricciones);
+                        //int pruebaCoste = rDiferencia(nuevaSolucion, restricciones);
+                        nuevoCoste = resultado.get(id) - fact1 + fact2;
 
-            if ( sentido < 0.5 ) {
-                boolean encontrado = false;
-                List<List<Integer>> listaRest = new ArrayList<>();
-                listaRest = restricciones.restriccionesTransmisor(token);
-                while( indiceInicial >= 0 &&  ! encontrado && listaRest.size() > 0 ) {
-                    int fact1 = rDiferencia(padres.get(id), token, restricciones);
-                    valorInicial = frecuencias.get(transmisores.get(token)).get(indiceInicial);
-                    nuevaSolucion.addAll(padres.get(id));
-                    nuevaSolucion.set(token, valorInicial);
-                    int fact2 = rDiferencia(nuevaSolucion, token, restricciones);
-                    nuevoCoste = rDiferencia(nuevaSolucion, restricciones);//resultado.get(id) - fact1 + fact2;
+                        if ( nuevoCoste < 0 ) {
+                            System.out.print("MENOR QUE 0");
+                        }
 
-                    if ( nuevoCoste < 0 ) {
-                        System.out.print("");
+                        if ( nuevoCoste < resultado.get(id) ) {
+                            //System.out.println("Cambio transmisor: "+token+" frecuencia: "+
+                            //        padres.get(id).get(token)+"por "+valorInicial+" resultado: "
+                            //        +resultado.get(id)+" por "+nuevoCoste);
+                            padres.get(id).set(token, valorInicial);
+                            resultado.set(id, nuevoCoste);
+                            encontrado = true;
+                        }
+                        indiceInicial = Math.floorMod(indiceInicial-1, frecuencias.get(transmisores.get(token)).size());
+                        nuevaSolucion.clear();
                     }
-                    
-                    if ( nuevoCoste < resultado.get(id) ) {
-                        //System.out.println("Cambio transmisor: "+token+" frecuencia: "+
-                        //        padres.get(id).get(token)+"por "+valorInicial+" resultado: "
-                        //        +resultado.get(id)+" por "+nuevoCoste);
-                        padres.get(id).set(token, valorInicial);
-                        resultado.set(id, nuevoCoste);
-                        encontrado = true;
+                } else {
+                    boolean encontrado = false;
+                    indiceInicial = Math.floorMod(indiceInicial-1, frecuencias.get(transmisores.get(token)).size());
+                    while( ! encontrado && indiceInicial != indiceOriginal  ) {
+                        int fact1 = rDiferencia(padres.get(id), token, restricciones);
+                        valorInicial = frecuencias.get(transmisores.get(token)).get(indiceInicial);
+                        nuevaSolucion.addAll(padres.get(id));
+                        nuevaSolucion.set(token, valorInicial);
+                        int fact2 = rDiferencia(nuevaSolucion, token, restricciones);
+//                        int pruebaCoste = rDiferencia(nuevaSolucion, restricciones);
+                        nuevoCoste = resultado.get(id) - fact1 + fact2;
+
+                        if ( nuevoCoste < 0 ) {
+                            System.out.print("MENOR QUE 0");
+                        }
+
+                        if ( nuevoCoste < resultado.get(id) ) {
+                            //System.out.println("Cambio transmisor: "+token+" frecuencia: "+
+                            //        padres.get(id).get(token)+"por "+valorInicial+" resultado: "
+                            //        +resultado.get(id)+" por "+nuevoCoste);
+                            padres.get(id).set(token, valorInicial);
+                            resultado.set(id, nuevoCoste);
+                            encontrado = true;
+                        }
+                        indiceInicial = Math.floorMod(indiceInicial+1, frecuencias.get(transmisores.get(token)).size());
+                        nuevaSolucion.clear();
                     }
-                    indiceInicial --;
-                    nuevaSolucion.clear();
                 }
-            } else {
-                boolean encontrado = false;
-                List<List<Integer>> listaRest = new ArrayList<>();
-                listaRest = restricciones.restriccionesTransmisor(token);
-                while( indiceInicial < frecuencias.get(transmisores.get(token)).size() 
-                        &&  ! encontrado && listaRest.size() > 0 ) {
-                    int fact1 = rDiferencia(padres.get(id), token, restricciones);
-                    valorInicial = frecuencias.get(transmisores.get(token)).get(indiceInicial);
-                    nuevaSolucion.addAll(padres.get(id));
-                    nuevaSolucion.set(token, valorInicial);
-                    int fact2 = rDiferencia(nuevaSolucion, token, restricciones);
-                    nuevoCoste = rDiferencia(nuevaSolucion, restricciones);//resultado.get(id) - fact1 + fact2;
-
-                    if ( nuevoCoste < 0 ) {
-                        System.out.print("");
-                    }
-                    
-                    if ( nuevoCoste < resultado.get(id) ) {
-                        //System.out.println("Cambio transmisor: "+token+" frecuencia: "+
-                        //        padres.get(id).get(token)+"por "+valorInicial+" resultado: "
-                        //        +resultado.get(id)+" por "+nuevoCoste);
-                        padres.get(id).set(token, valorInicial);
-                        resultado.set(id, nuevoCoste);
-                        encontrado = true;
-                    }
-                    indiceInicial ++;
-                    nuevaSolucion.clear();
-                }
+                token = Math.floorMod(token + 1, transmisores.size());
+                numEvaluaciones++;
             }
-            token = Math.floorMod(token + 1, transmisores.size());
-        }
-        numEvaluaciones++;
+        }    
     }
 
     /**
