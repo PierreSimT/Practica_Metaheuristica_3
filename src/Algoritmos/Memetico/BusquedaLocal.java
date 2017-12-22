@@ -21,36 +21,11 @@ public class BusquedaLocal {
 
     public static int numIteraciones = 200;
     int id;
-    //List<Integer> frecuenciasR; // Cada posicion es la frecuencia asignada a dicho transmisor
 
     public BusquedaLocal ( int _id ) {
-//        for ( int i = 0; i < numIndividuos; i++ ) {
-//            System.out.println("Resultado "+i+" "+resultado.get(i));
-//            if ( resultado.get(i) < 0 ) 
-//                System.out.println("Ejecucion "+ejecucion);
-//        }
-        //frecuenciasR = padres.get(id);
         id = _id;
         
     }
-    
-//    public BusquedaLocal ( listaTransmisores _transmisores, rangoFrec _frecuencias, Restricciones _restricciones ) throws FileNotFoundException {
-//        frecuencias = _frecuencias.rangoFrecuencias;
-//        transmisores = _transmisores.transmisores;
-//        restricciones = _restricciones;
-//        
-//        if ( numIteraciones == 0 )
-//            numIteraciones = 200;
-//        
-//        for ( int i = 0; i < transmisores.size(); i ++ ) {
-//            int indiceFrecAleatoria = NUMERO.nextInt(frecuencias.get(transmisores.get(i)).size());
-//            int frecAleatoria = frecuencias.get(transmisores.get(i)).get(indiceFrecAleatoria);
-//            frecuenciasR.add(frecAleatoria);
-//        }
-//        
-//        resultado = rDiferencia(frecuenciasR, rest);
-//        
-//    }
     
     /**
      * Algoritmo greedy: Asignar un valor al transmisor de forma iterativa e ir

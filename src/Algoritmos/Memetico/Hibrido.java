@@ -6,7 +6,6 @@
 package Algoritmos.Memetico;
 
 import Utils.Restricciones;
-import static Utils.Utilidades.rDiferencia;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,11 +57,16 @@ public class Hibrido {
         
     }
     
+    /**
+     * Algoritmo a seguir del AM.
+     * Tenemos tres casos que puede seguir el algoritmo, cada uno haciendo 
+     * referencia a la eleccion que se hace desde el menu al ejecutar el programa.
+     * @throws FileNotFoundException 
+     */
     public void algoritmo () throws FileNotFoundException {
         
         Generacional genetico = new Generacional ();
         while ( numEvaluaciones < 20000 ) {
-//            System.out.println("Ejecucion de generacional");
             genetico.algoritmo();
             if ( AM1 ) {
                 for ( int i = 0; i < numIndividuos; i++ ){
@@ -94,6 +98,11 @@ public class Hibrido {
         
     }
     
+    /**
+     * Funcion que devuelve por pantalla los transmisores del mejor resultado
+     * y su coste
+     * @throws FileNotFoundException 
+     */
     public void resMejorIndividuo () throws FileNotFoundException {
         int minimo = Integer.MAX_VALUE;
         int actual = 0;
@@ -113,6 +122,10 @@ public class Hibrido {
         System.out.println(minimo);
     }
     
+    /**
+     * Solo se devuelve como entero el resultado
+     * @return resultado con menor coste
+     */
     public int resultadoFinal() {
         int minimo = Integer.MAX_VALUE;
         int actual = 0;

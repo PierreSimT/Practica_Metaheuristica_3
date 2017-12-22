@@ -14,17 +14,10 @@ import Utils.Restricciones;
 import Utils.listaTransmisores;
 import Utils.rangoFrec;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Random;
 import java.util.Scanner;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 
 /**
@@ -156,7 +149,7 @@ public class main {
                         System.out.println("Tiempo de ejecucion: " + duration + " segundos");
                         break;
                     case 5:
-                        System.out.println("Ejecutando Greddy Mejorado en "+DIRECTORIO);
+                        System.out.print("Ejecutando Greddy Mejorado en "+DIRECTORIO);
                         startTime = System.nanoTime();
                         GreedyMejor greedyM = new GreedyMejor(frecuencias.rangoFrecuencias, transmisores.transmisores, rest);
                         greedyM.algoritmo();                        

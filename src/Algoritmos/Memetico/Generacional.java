@@ -30,6 +30,10 @@ public class Generacional {
     int mejorResult = Integer.MAX_VALUE;
     int idMutado;
 
+    /**
+     * Constructor del algoritmo
+     * @throws FileNotFoundException 
+     */
     public Generacional() throws FileNotFoundException {
 
         for (int i = 0; i < numIndividuos; i++) {
@@ -38,6 +42,10 @@ public class Generacional {
 
     }
 
+    /**
+     * Codigo que ejecuta el algoritmo.
+     * @throws FileNotFoundException 
+     */
     void algoritmo() throws FileNotFoundException {
 
         numGeneraciones = 0;
@@ -51,6 +59,16 @@ public class Generacional {
         }
     }
 
+    /**
+     * La construccion inicial se puede hacer de dos formas dependiendo de cual
+     * se encuentra activa. Para nuestro grupo de practicas se nos ha indicado
+     * de implementar un algoritmo Greedy que no busca minimizar el coste, solo 
+     * usar valores aleatorios, mientras que en la practica se usa el Greedy
+     * usado en la practica 2. Por lo tanto, damos la habilidad de poder alternar
+     * entre ambas implementaciones desde el menu.
+     * @param id Indice del padre que se esta construyendo
+     * @throws FileNotFoundException 
+     */
     void construccionInicial(int id) throws FileNotFoundException {
 
         if (!mejorado) {
@@ -140,10 +158,17 @@ public class Generacional {
             resultado.set(id, rDiferencia(frecuenciasR, restricciones));
             padres.get(id).addAll(frecuenciasR);
             frecuenciasR.clear(); // Borra todos los elementos anteriores para nueva solucion
+            BusquedaLocal bl = new BusquedaLocal(id);
+            bl.algoritmo();
+
         }
 
     }
 
+    /**
+     * Se generan los hijos, al finalizar esta funcion los hijos son copias
+     * exactas de los padres.
+     */
     void generarHijos() {
         for (int i = 0; i < numIndividuos; i++) {
             Random numero = NUMERO;
@@ -161,6 +186,10 @@ public class Generacional {
 
     }
 
+    /**
+     * Cruza dos hijos, pasamos estos indices a la funcion que se encargara de 
+     * hacer el cruce entre ambos hijos.
+     */
     void cruzarIndividuos() {
         int cont = 0;
         while (cont < numParejas) {
@@ -175,6 +204,9 @@ public class Generacional {
     // No estoy seguro de si habría que hacerla así.
     final double alfa = 0.5;
 
+    /**
+     * Funcion que muta un gen de un cromosoma aleatorio.
+     */
     void mutarIndividuos() {
         //Mutamos solo un individuo
 
@@ -192,6 +224,11 @@ public class Generacional {
 
     }
 
+    /**
+     * Cruce BLX de los hijos que se pasaron anteriormente desde cruzarIndividuos
+     * @param individuo1
+     * @param individuo2 
+     */
     void algBX(int individuo1, int individuo2) {
 
         List<Integer> solucion1 = new ArrayList<>();
@@ -252,6 +289,12 @@ public class Generacional {
         hijos.set(individuo2, solucion2);
     }
 
+    /** 
+     * Funcion que realiza las ultimas operaciones para pasar la generacion de
+     * hijos a la siguiente generacion de padres. Aqui tambien se comprueba si
+     * se debe de realizar la reinicializacion.
+     * @throws FileNotFoundException 
+     */
     public void nuevaGeneracion() throws FileNotFoundException {
         //Elitismo
 
@@ -269,8 +312,6 @@ public class Generacional {
 
         List<Integer> mejorIndividuo = padres.get(actual);
 
-        /* Modificar todo esto, hay menos individuos a evaluar a cada iteracion */
-        // Evaluamos los hijos
         // Evaluamos los hijos
         if (idMutado <= 14) {
             resultadoHijos = evaluar(hijos, idMutado);
@@ -311,7 +352,7 @@ public class Generacional {
 
         for (int i = 0; i < resultado.size(); i++) {
             if (resultadoHijos[i] != 0) {
-                resultado.set(i, resultadoHijos[i]); //rDiferencia(padres.get(i), restricciones);
+                resultado.set(i, resultadoHijos[i]);
                 if (resultado.get(i) < mejorResult) {
                     mejorResult = resultado.get(i);
                     idMejorResult = i;
@@ -333,6 +374,13 @@ public class Generacional {
         }
     }
 
+    /**
+     * Evaluamos los hijos y obtenemos sus resultados.
+     * @param individuos
+     * @param mutado
+     * @return
+     * @throws FileNotFoundException 
+     */
     public int[] evaluar(List<List<Integer>> individuos, int mutado) throws FileNotFoundException {
         int[] result = new int[numIndividuos];
 
@@ -346,6 +394,11 @@ public class Generacional {
         return result;
     }
 
+    /**
+     * Si existe convergencia o estancamiento se realiza una reinicializacion
+     * desde aqui se llama a la construccion Inicial para reconstruir una solucion.
+     * @throws FileNotFoundException 
+     */
     private void reinicializacion() throws FileNotFoundException {
         List<Integer> mejorSolucion = new ArrayList();
         mejorSolucion.addAll(padres.get(idMejorResult));
@@ -365,6 +418,10 @@ public class Generacional {
 
     }
 
+    /**
+     * Esta funciona comprueba si los individuos convergen a una misma solucion
+     * @return 
+     */
     private boolean comprobarConvergencia() {
 
         List<Integer> auxiliar = new ArrayList<>();
@@ -415,6 +472,11 @@ public class Generacional {
         return convergencia;
     }
 
+    /**
+     * Funcion que devuelve por pantalla los transmisores del mejor resultado
+     * y su coste
+     * @throws FileNotFoundException 
+     */
     public void resMejorIndividuo() throws FileNotFoundException {
         int minimo = Integer.MAX_VALUE;
         int actual = 0;
@@ -432,9 +494,13 @@ public class Generacional {
             }
         }
 
-        System.out.println(resultado.get(actual));
+        System.out.println("Resultado: "+resultado.get(actual));
     }
 
+    /**
+     * Solo se devuelve como entero el resultado
+     * @return 
+     */
     public int resultadoFinal() {
         int minimo = Integer.MAX_VALUE;
         int actual = 0;
