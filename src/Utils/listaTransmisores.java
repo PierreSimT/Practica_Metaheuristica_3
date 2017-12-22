@@ -28,7 +28,7 @@ public class listaTransmisores {
         }
         File file = new File(main.TRABAJO + "/conjuntos/" + main.DIRECTORIO + "/" + datos);
 
-        for ( int i = 0; i < LINEAS-1; i ++ ) {
+        for ( int i = 0; i < LINEAS; i ++ ) {
             transmisores.add(0);
         }
 
