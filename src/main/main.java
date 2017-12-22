@@ -7,6 +7,8 @@ package main;
 
 //import Algoritmos.P2.*;
 import Algoritmos.Memetico.Hibrido;
+import Greedy.Greedy;
+import Greedy.GreedyMejor;
 import Utils.Restricciones;
 import Utils.listaTransmisores;
 import Utils.rangoFrec;
@@ -34,9 +36,9 @@ public class main {
     public static String TRABAJO;
     public static Integer LINEAS;
     public static Random NUMERO;
-    public static String DIRECTORIOS [] = { /*"scen06", "scen07", "scen08", "scen09", "scen10", "graph05", "graph06", "graph07",*/ "graph11", "graph12" };
+    public static String DIRECTORIOS [] = { "scen06", "scen07", "scen08", "scen09", "scen10", "graph05", "graph06", "graph07", "graph11", "graph12" };
     public static Integer SEMILLAS[] = {3181827, 1818273, 8182731, 1827318, 8273181};
-    public static String archivos [] =  {"AM_10_1.xlsx", "AM_10_01.xlsx", "AM_10_01_mej.xlsx" };
+    public static String archivos [] =  {"Greedy.xlsx" };//"AM_10_1.xlsx", "AM_10_01.xlsx", "AM_10_01_mej.xlsx" };
     
     //Variables para el menu
     static Scanner scanner = new Scanner(System.in);
@@ -50,7 +52,7 @@ public class main {
     public static void main ( String[] args ) throws FileNotFoundException, IOException {
         
         int lineaInicial = 2;
-        int columnaInicial = 18;
+        int columnaInicial = 1;
         int cuentaDirectorios = 0;
         
         NUMERO = new Random();
@@ -72,7 +74,7 @@ public class main {
         float duration;
         int contador = 0;
         int semilla = 0;
-        select = 1;
+        select = 4;
         while( select != 0 ) {
 
             if ( semilla == 0 ) {
@@ -86,8 +88,10 @@ public class main {
                         + "1.- AM (10,1.0)\n"
                         + "2.- AM (10,0.1)\n"
                         + "3.- AM (10,0.1mej)\n"
-                        + "4.- Cambiar conjunto de archivos\n"
-                        + "5.- Cambiar semilla\n "
+                        + "4.- Greedy\n"
+                        + "5.- Greedy Mejorado\n"
+                        + "6.- Cambiar conjunto de archivos\n"
+                        + "7.- Cambiar semilla\n "
                         + "0.- Salir"
                         + "\n: ");
 
@@ -143,6 +147,34 @@ public class main {
                         Hibrido.AM3 = false;
                         break;
                     case 4:
+                        System.out.println("Ejecucion "+contador+" de "+DIRECTORIO);
+                        startTime = System.nanoTime();
+                        Greedy greedy = new Greedy (frecuencias.rangoFrecuencias, transmisores.transmisores, rest);
+                        greedy.algoritmo();                        
+                        endTime = System.nanoTime();
+//                        greedy.resMejorIndividuo();
+                        resultado = greedy.resultadoFinal();
+                        
+                        duration = (endTime - startTime) / 1000000000;
+                        System.out.println("Tiempo de ejecucion: " + duration + " segundos ; resultado : "+resultado+" en archivo "+archivos[cuentaArchivos]+" algoritmo "+select);
+                        escribirExcel(duration, resultado, lineaInicial, columnaInicial, archivos[cuentaArchivos]);
+                        lineaInicial++; 
+                        break;
+                    case 5:
+                        System.out.println("Ejecucion "+contador+" de "+DIRECTORIO);
+                        startTime = System.nanoTime();
+                        GreedyMejor greedyM = new GreedyMejor(frecuencias.rangoFrecuencias, transmisores.transmisores, rest);
+                        greedyM.algoritmo();                        
+                        endTime = System.nanoTime();
+//                        memetico.resMejorIndividuo();
+                        resultado = greedyM.resultadoFinal();
+                        
+                        duration = (endTime - startTime) / 1000000000;
+                        System.out.println("Tiempo de ejecucion: " + duration + " segundos ; resultado : "+resultado+" en archivo "+archivos[cuentaArchivos]+" algoritmo "+select);
+                        escribirExcel(duration, resultado, lineaInicial, columnaInicial, archivos[cuentaArchivos]);
+                        lineaInicial++;
+                        break;
+                    case 6:
                         System.out.println("Conjunto de archivos que quiere usar: ");
 
                         DIRECTORIO = reader.next();
@@ -152,7 +184,7 @@ public class main {
                         transmisores = new listaTransmisores();
                         rest = new Restricciones();
                         break;
-                    case 5:
+                    case 7:
                         System.out.print("Nueva semilla: ");
                         semilla = reader.nextInt();
                         NUMERO.setSeed(semilla);
@@ -172,7 +204,7 @@ public class main {
 //            }
             
             if ( contador == 4 ) {
-                cuentaDirectorios = Math.floorMod(cuentaDirectorios + 1, 2);
+                cuentaDirectorios = Math.floorMod(cuentaDirectorios + 1, 10);
                 DIRECTORIO = DIRECTORIOS[cuentaDirectorios];
                 LINEAS = countLines(DIRECTORIO) + 1;
                 frecuencias = new rangoFrec();
@@ -188,7 +220,7 @@ public class main {
                     select += 1;
                 }
                 
-                if ( select == 2 ) {
+                if ( select == 5 ) {
                     select = 0;
                 }
             }
