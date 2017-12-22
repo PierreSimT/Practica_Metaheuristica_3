@@ -6,18 +6,25 @@
 package main;
 
 //import Algoritmos.P2.*;
+import Algoritmos.Memetico.Generacional;
 import Algoritmos.Memetico.Hibrido;
+import Greedy.Greedy;
+import Greedy.GreedyMejor;
 import Utils.Restricciones;
 import Utils.listaTransmisores;
 import Utils.rangoFrec;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Random;
 import java.util.Scanner;
-//import org.apache.poi.hssf.usermodel.HSSFSheet;
-//import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-//import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 
 /**
@@ -30,9 +37,7 @@ public class main {
     public static String TRABAJO;
     public static Integer LINEAS;
     public static Random NUMERO;
-//    public static String DIRECTORIOS [] = { /*"scen06", "scen07", "scen08", "scen09", "scen10", "graph05", "graph06", "graph07", */ "graph12" };
     public static Integer SEMILLAS[] = {3181827, 1818273, 8182731, 1827318, 8273181};
-//    public static String archivos [] =  {"Generacional_2Puntos.xls", "Estacionario_2Puntos.xls", "Estacionario_BLX.xls" };
     
     //Variables para el menu
     static Scanner scanner = new Scanner(System.in);
@@ -45,34 +50,25 @@ public class main {
      */
     public static void main ( String[] args ) throws FileNotFoundException, IOException {
         
-        int lineaInicial = 2;
-        int columnaInicial = 1;
-        int cuentaDirectorios = 0;
-        
-        int prueba = 0;
-        while ( prueba < 9) {
-            prueba += 2;
-        }
-        
         NUMERO = new Random();
 
         TRABAJO = System.getProperty("user.dir");
 
         System.out.println("Conjunto de archivos que quiere usar: ");
         Scanner reader = new Scanner(System.in);
-        DIRECTORIO =  reader.nextLine(); //DIRECTORIOS[cuentaDirectorios];
+        DIRECTORIO =  reader.nextLine(); 
         LINEAS = countLines(DIRECTORIO)+1;
 
         rangoFrec frecuencias = new rangoFrec();
         listaTransmisores transmisores = new listaTransmisores();
         Restricciones rest = new Restricciones();
 
-        int cuentaArchivos = 0;
         float startTime;
         float endTime;
         float duration;
         int contador = 0;
         int semilla = 0;
+        select = -1;
         while( select != 0 ) {
 
             if ( semilla == 0 ) {
@@ -81,13 +77,16 @@ public class main {
                 NUMERO.setSeed(semilla);
             }
 
-//            try {
+            try {
                 System.out.print("Elige opción:\n"
                         + "1.- AM (10,1.0)\n"
                         + "2.- AM (10,0.1)\n"
                         + "3.- AM (10,0.1mej)\n"
-                        + "4.- Cambiar conjunto de archivos\n"
-                        + "5.- Cambiar semilla\n "
+                        + "4.- Greedy (PROFESOR)\n"
+                        + "5.- Greedy Mejorado (PRACTICA)\n"
+                        + "6.- Cambiar uso de Greedy para AM\n"
+                        + "7.- Cambiar conjunto de archivos\n"
+                        + "8.- Cambiar semilla\n "
                         + "0.- Salir"
                         + "\n: ");
 
@@ -95,40 +94,46 @@ public class main {
 
                 switch( select ) {
                     case 1:
-                        System.out.println("Ejecucion "+contador+" de "+DIRECTORIO);
+                        System.out.print("Ejecutando AM(10,1.0) en "+DIRECTORIO);
+                        if ( Generacional.mejorado )
+                            System.out.println(" con Greedy Mejorado");
+                        else
+                            System.out.println(" con Greedy");
                         startTime = System.nanoTime();
                         Hibrido.AM1 = true;
                         Hibrido memetico = new Hibrido(frecuencias.rangoFrecuencias, transmisores.transmisores, rest);
                         memetico.algoritmo();                        
                         endTime = System.nanoTime();
                         memetico.resMejorIndividuo();
-                        //int resultado = memetico.resultadoFinal();
                         
                         duration = (endTime - startTime) / 1000000000;
                         System.out.println("Tiempo de ejecucion: " + duration + " segundos");
-//                        escribirExcel(duration, resultado, lineaInicial, columnaInicial, archivos[cuentaArchivos]);
-                        lineaInicial++;
                         Hibrido.AM1 = false;
                         break;
                     case 2:
                         Hibrido.AM2 = true;
-                        System.out.println("Ejecucion "+contador+" de "+DIRECTORIO);
+                        System.out.println("Ejecutando AM(10,0.1) en "+DIRECTORIO);
+                        if ( Generacional.mejorado )
+                            System.out.println(" con Greedy Mejorado");
+                        else
+                            System.out.println(" con Greedy");
                         startTime = System.nanoTime();
                         memetico = new Hibrido(frecuencias.rangoFrecuencias, transmisores.transmisores, rest);
                         memetico.algoritmo();                        
                         endTime = System.nanoTime();
                         memetico.resMejorIndividuo();
-                        //int resultado = memetico.resultadoFinal();
                         
                         duration = (endTime - startTime) / 1000000000;
                         System.out.println("Tiempo de ejecucion: " + duration + " segundos");
-//                        escribirExcel(duration, resultado, lineaInicial, columnaInicial, archivos[cuentaArchivos]);
-                        lineaInicial++;
                         Hibrido.AM2 = false;
                         break;
                     case 3:
                         Hibrido.AM3 = true;
-                        System.out.println("Ejecucion "+contador+" de "+DIRECTORIO);
+                        System.out.println("Ejecutando AM(10,0.1mej) en "+DIRECTORIO);
+                        if ( Generacional.mejorado )
+                            System.out.println(" con Greedy Mejorado");
+                        else
+                            System.out.println(" con Greedy");
                         startTime = System.nanoTime();
                         memetico = new Hibrido(frecuencias.rangoFrecuencias, transmisores.transmisores, rest);
                         memetico.algoritmo();                        
@@ -137,11 +142,42 @@ public class main {
                         
                         duration = (endTime - startTime) / 1000000000;
                         System.out.println("Tiempo de ejecucion: " + duration + " segundos");
-//                        escribirExcel(duration, resultado, lineaInicial, columnaInicial, archivos[cuentaArchivos]);
-                        lineaInicial++;
                         Hibrido.AM3 = false;
                         break;
                     case 4:
+                        System.out.println("Ejecutando Greddy en "+DIRECTORIO);
+                        startTime = System.nanoTime();
+                        Greedy greedy = new Greedy (frecuencias.rangoFrecuencias, transmisores.transmisores, rest);
+                        greedy.algoritmo();                        
+                        endTime = System.nanoTime();
+                        greedy.resMejorIndividuo();
+                        
+                        duration = (endTime - startTime) / 1000000000;
+                        System.out.println("Tiempo de ejecucion: " + duration + " segundos");
+                        break;
+                    case 5:
+                        System.out.println("Ejecutando Greddy Mejorado en "+DIRECTORIO);
+                        startTime = System.nanoTime();
+                        GreedyMejor greedyM = new GreedyMejor(frecuencias.rangoFrecuencias, transmisores.transmisores, rest);
+                        greedyM.algoritmo();                        
+                        endTime = System.nanoTime();
+                        greedyM.resMejorIndividuo();
+                        
+                        duration = (endTime - startTime) / 1000000000;
+                        System.out.println("Tiempo de ejecucion: " + duration + " segundos");
+                        break;
+                    case 6:
+                        if ( Generacional.mejorado ) {
+                            Generacional.mejorado = false;
+                            System.out.println("Establecido Greedy (PROFESOR)");
+                        }
+                        else {
+                            Generacional.mejorado = true;
+                            System.out.println("Establecido Greedy Mejorado (PRACTICA)");
+                        }
+                        contador = Math.floorMod(contador-1, 5);
+                        break;
+                    case 7:
                         System.out.println("Conjunto de archivos que quiere usar: ");
 
                         DIRECTORIO = reader.next();
@@ -150,45 +186,28 @@ public class main {
                         frecuencias = new rangoFrec();
                         transmisores = new listaTransmisores();
                         rest = new Restricciones();
+                        contador = Math.floorMod(contador-1, 5);
                         break;
-                    case 5:
+                    case 8:
                         System.out.print("Nueva semilla: ");
                         semilla = reader.nextInt();
                         NUMERO.setSeed(semilla);
+                        contador = Math.floorMod(contador-1, 5);
                         break;
                     case 0:
                         System.out.println("Fin");
                         break;
                     default:
                         System.out.println("Número no reconocido");
+                        contador = Math.floorMod(contador-1, 5);
                         break;
                 }
 
                 System.out.println("\n"); //Mostrar un salto de línea en Java
 
-//            } catch( Exception e ) {
-//                System.out.println("Uoop! Error! " + e.toString());
-//            }
-            
-//            if ( contador == 4 ) {
-//                cuentaDirectorios = Math.floorMod(cuentaDirectorios + 1, 8);
-//                DIRECTORIO = DIRECTORIOS[cuentaDirectorios];
-//                LINEAS = countLines(DIRECTORIO) + 1;
-//                frecuencias = new rangoFrec();
-//                transmisores = new listaTransmisores();
-//                rest = new Restricciones ();
-//                
-//                lineaInicial = 2;
-//                columnaInicial = columnaInicial + 2;
-//                
-//                if ( cuentaDirectorios == 0 ) {
-//                    columnaInicial = 1;
-//                    cuentaArchivos += 1;
-//                    select += 1;
-//                }
-//                if ( cuentaArchivos == 1 )
-//                    select = 0;
-//            }
+            } catch( Exception e ) {
+                System.out.println("Uoop! Error! " + e.toString());
+            }
             
             contador = Math.floorMod(contador + 1, 5);
         }
@@ -208,27 +227,4 @@ public class main {
         }
         return ultimoTransmisor;
     }
-
-//    private static void escribirExcel (float duration, int resultado, int linea, int columna, String archivo) throws FileNotFoundException, IOException {
-//        FileInputStream archivoXLS = new FileInputStream (new File(System.getProperty("user.dir")+"/"+archivo));
-//        
-//        HSSFWorkbook libro = new HSSFWorkbook(archivoXLS);
-//
-//        HSSFSheet hoja = libro.getSheetAt(0);
-//
-//        Cell cell = null;
-//        
-//        cell = hoja.getRow(linea).getCell(columna);
-//        cell.setCellValue(resultado);
-//        cell = hoja.getRow(linea).getCell(columna+1);
-//        cell.setCellValue(duration);
-//
-//        archivoXLS.close();
-//
-//        FileOutputStream archivoOutXLS = new FileOutputStream (new File(System.getProperty("user.dir")+"/"+archivo));
-//        
-//        libro.write(archivoOutXLS);
-//        
-//        archivoOutXLS.close();
-//    }
 }
